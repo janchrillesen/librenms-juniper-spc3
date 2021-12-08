@@ -1,4 +1,4 @@
-mib: JUNIPER-IFOPTICS-MIB:JNX-OPT-IF-EXT-MIB:IF-MIB:JUNIPER-MIB:JUNIPER-SRX5000-SPU-MONITORING-MIB:JUNIPER-ALARM-MIB:JUNIPER-VIRTUALCHASSIS-MIB:JUNIPER-VIRTUALCHASSIS-MIB:JUNIPER-RPM-MIB
+mib: JUNIPER-IFOPTICS-MIB:JNX-OPT-IF-EXT-MIB:IF-MIB:JUNIPER-MIB:JUNIPER-SRX5000-SPU-MONITORING-MIB:JUNIPER-ALARM-MIB:JUNIPER-VIRTUALCHASSIS-MIB:JUNIPER-VIRTUALCHASSIS-MIB:JUNIPER-RPM-MIB:JUNIPER-SP-MIB
 modules:
     mempools:
         data:
@@ -21,6 +21,11 @@ modules:
                 oid: JUNIPER-SRX5000-SPU-MONITORING-MIB::jnxJsSPUMonitoringObjectsEntry
                 percent_used: JUNIPER-SRX5000-SPU-MONITORING-MIB::jnxJsSPUMonitoringMemoryUsage
                 descr: '{{ $JUNIPER-SRX5000-SPU-MONITORING-MIB::jnxJsSPUMonitoringNodeDescr }} SPU {{ $JUNIPER-SRX5000-SPU-MONITORING-MIB::jnxJsSPUMonitoringFPCIndex }}/{{ $JUNIPER-SRX5000-SPU-MONITORING-MIB::jnxJsSPUMonitoringSPUIndex }}'
+            -
+                oid: JnxSpSvcSetIfEntry
+                value: jnxSpSvcSetIfNumTotalSessActive
+                num_oid: '.1.3.6.1.4.1.2636.3.32.1.3.1.1.{{ $index }}'
+                descr: '{{ $jnxSpSvcSetIfTableName }}'
     processors:
         data:
             -
@@ -177,6 +182,33 @@ modules:
                     index: 'jnxJsSPUMonitoringCurrentCPSession.{{ $index }}'
                     skip_values:
                         - 0
+                -
+                    oid: jnxSpSvcSetIfTable
+                    value: jnxSpSvcSetIfNumTotalSessActive
+                    num_oid: '.1.3.6.1.4.1.2636.3.32.1.3.1.11.{{ $index }}'
+                    group: Sessions
+                    descr: '{{ $jnxSpSvcSetIfTableName }} number of sessions'
+                    index: 'jnxSpSvcSetIfNumTotalSessActive.{{ $index }}'
+                    skip_values:
+                        - 0
+        load:
+            data:
+                -
+                    oid: jnxSpSvcSetIfTable
+                    value: jnxSpSvcSetIfCpuUtil
+                    num_oid: '.1.3.6.1.4.1.2636.3.32.1.3.1.8.{{ $index }}'
+                    group: Processor
+                    descr: '{{ $jnxSpSvcSetIfTableName }} CPU utilization'
+                    index: 'jnxSpSvcSetIfCpuUtil.{{ $index }}'
+        percent:
+            data:
+                -
+                    oid: jnxSpSvcSetIfTable
+                    value: jnxSpSvcSetIfPctMemoryUsage
+                    num_oid: '.1.3.6.1.4.1.2636.3.32.1.3.1.4.{{ $index }}'
+                    group: Memory
+                    descr: '{{ $jnxSpSvcSetIfTableName }} memory usage'
+                    index: 'jnxSpSvcSetIfPctMemoryUsage.{{ $index }}'
         state:
             data:
                 -
